@@ -1,6 +1,5 @@
 const std = @import("std");
 const clay = @import("c-clay");
-const zeroinit_struct = @import("zeroinit_struct.zig");
 
 pub const minMemorySize = clay.Clay_MinMemorySize;
 pub const createArenaWithCapacityAndMemory = clay.Clay_CreateArenaWithCapacityAndMemory;
@@ -30,15 +29,14 @@ pub fn id(eid: []const u8) ElementId {
     }, 0);
 }
 
-pub fn begin(eid: ElementId, decl: zeroinit_struct.createZeroinitStruct(clay.Clay_ElementDeclaration)) void {
+pub fn begin(eid: ElementId, decl: clay.Clay_ElementDeclaration) void {
     clay.Clay__OpenElementWithId(eid);
 
-    const decl_orig: *const clay.Clay_ElementDeclaration = @ptrCast(&decl);
-    clay.Clay__ConfigureOpenElement(decl_orig.*);
+    clay.Clay__ConfigureOpenElement(decl);
 }
 pub const end = clay.Clay__CloseElement;
 
-pub fn sizingGrow(minMax: anytype) zeroinit_struct.createZeroinitStruct(clay.Clay_SizingAxis) {
+pub fn sizingGrow(minMax: anytype) clay.Clay_SizingAxis {
     switch (@TypeOf(minMax)) {
         comptime_int => {
             if (minMax != 0) @compileError("minMax expected to be 0 as for zero-init");
@@ -52,7 +50,7 @@ pub fn sizingGrow(minMax: anytype) zeroinit_struct.createZeroinitStruct(clay.Cla
     }
 }
 
-pub fn sizingFixed(value: f32) zeroinit_struct.createZeroinitStruct(clay.Clay_SizingAxis) {
+pub fn sizingFixed(value: f32) clay.Clay_SizingAxis {
     return .{
         .size = .{
             .minMax = .{

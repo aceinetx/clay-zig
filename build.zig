@@ -13,6 +13,7 @@ pub fn build(b: *std.Build) void {
         .c_source_file = b.path("src/clay.h"),
         .target = target,
         .optimize = optimize,
+        .default_init = true,
     });
 
     // ----------------------------------------------------------
